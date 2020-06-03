@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-const bottomButtonHeight = 80.0;
-const bottomButtonColor = Colors.cyan;
-const cardColor = Colors.deepOrange;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'reusableCard.dart';
+import 'iconCard.dart';
+import 'consts.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  bool male = false;
+  int height = 160;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,26 +22,83 @@ class _InputPageState extends State<InputPage> {
         ),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
             child: Row(
               children: <Widget>[
                 Expanded(
                   child: ReusableCard(
-                    color: cardColor,
-                  ),
+                      color: male ? kActiveCardColor : kInactiveCardColor,
+                      cardChild: IconCard(icon: FontAwesomeIcons.mars, text: 'Male'),
+                      onPressed: () {
+                        setState(() {
+                          male = true;
+                          print('male');
+                        });
+                      }),
                 ),
                 Expanded(
                   child: ReusableCard(
-                    color: cardColor,
-                  ),
+                      color: !male ? kActiveCardColor : kInactiveCardColor,
+                      cardChild: IconCard(icon: FontAwesomeIcons.venus, text: 'Female'),
+                      onPressed: () {
+                        setState(() {
+                          male = false;
+                          print('malen\'t');
+                        });
+                      }),
                 ),
               ],
             ),
           ),
           Expanded(
             child: ReusableCard(
-              color: cardColor,
+              color: kActiveCardColor,
+              cardChild: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Height',
+                    style: kLabelTextStyle,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: <Widget>[
+                      Text(
+                        height.toString(),
+                        style: kVeryLargeText,
+                      ),
+                      Text(
+                        ' cm',
+                        style: kLabelTextStyle,
+                      )
+                    ],
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 14),
+                      overlayShape: RoundSliderOverlayShape(overlayRadius: 28),
+                      thumbColor: kBottomButtonColor,
+                      overlayColor: kBottomButtonColor.withAlpha(20),
+                      activeTrackColor: Colors.white,
+                      inactiveTrackColor: Colors.blueGrey,
+                    ),
+                    child: Slider(
+                      value: height.toDouble(),
+                      min: 100,
+                      max: 200,
+                      onChanged: (double newValue) {
+                        setState(() {
+                          height = newValue.round();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -46,43 +106,25 @@ class _InputPageState extends State<InputPage> {
               children: <Widget>[
                 Expanded(
                   child: ReusableCard(
-                    color: cardColor,
+                    color: kActiveCardColor,
                   ),
                 ),
                 Expanded(
                   child: ReusableCard(
-                    color: cardColor,
+                    color: kActiveCardColor,
                   ),
                 ),
               ],
             ),
           ),
           Container(
-            color: bottomButtonColor,
+            color: kBottomButtonColor,
             margin: EdgeInsets.only(top: 10),
             width: double.infinity,
-            height: bottomButtonHeight,
+            height: kBottomButtonHeight,
           ),
         ],
       ),
-    );
-  }
-}
-
-class ReusableCard extends StatelessWidget {
-  //
-  ReusableCard({@required this.color});
-  final Color color;
-  final Widget cardChild;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(12),
-      ),
-//        color: Colors.red,
-      margin: EdgeInsets.all(12),
     );
   }
 }
